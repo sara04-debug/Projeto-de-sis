@@ -1,0 +1,14 @@
+CREATE DATABASE netshoes; 
+USE netshoes; 
+
+CREATE TABLE cliente (
+nome VARCHAR(50) PRIMARY KEY NOT NULL,
+cpf VARCHAR (50) NOT NULL,
+email VARCHAR (50) NOT NULL
+);
+
+CREATE TABLE produtos (
+nome VARCHAR (50) PRIMARY KEY NOT NULL,
+preço VARCHAR (25) NOT NULL,
+categoria VARCHAR (25)
+); 
