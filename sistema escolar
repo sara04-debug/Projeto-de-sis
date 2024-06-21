@@ -1,0 +1,123 @@
+import mysql.connector
+
+class Aluno: #classe aluno
+    def __init__(self, nome, data_nascimento): # init/inicializa os atributos do objeto (instância) da classe.
+        self.nome = nome #recebe nome
+        self.data_nascimento = data_nascimento #recebe data_nascimento
+
+class Professor: #classe professor
+    def __init__(self, nome, especialidade): #paradigmas nome e especialida
+        self.nome = nome # recebe nome
+        self.especialidade = especialidade #recbe especialidade
+
+class Curso: #classe curso
+    def __init__(self, nome, carga_horaria):
+        self.nome = nome
+        self.carga_horaria = carga_horaria
+
+class SistemaEscolar: #classe sistemaescolar 
+    def __init__(self):
+        self.conexao = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="he182555@",
+            database="redacao"
+        )
+        self.cursor = self.conexao.cursor() #processo para conectar ao banco de dados
+
+    def adicionar_aluno(self, aluno): # adicionando aluno
+        sql = "INSERT INTO alunos (nome, data_nascimento) VALUES (%s, %s)" #usando as funcoes do mysql "INSERT INTO"  com os valores
+        valores = (aluno.nome, aluno.data_nascimento) #definindo os valores
+        self.cursor.execute(sql, valores) #executando as dua linhas anteriores
+        self.conexao.commit() #adicionando e atualizando no banco
+        print('Aluno cadastrado com sucesso.')
+
+    def adicionar_professor(self, nome, especialidade): #adicionando professor
+        sql = "INSERT INTO professores (nome, especialidade) VALUES (%s, %s)"
+        valores = (nome, especialidade) #usando as funcoes do mysql "INSERT INTO"  com os valores
+        self.cursor.execute(sql, valores) #executando as dua linhas anteriores
+        self.conexao.commit() #adicionando e atualizando no banco
+        print('Professor cadastrado com sucesso.')
+
+    def adicionar_cursos(self, curso): #adicionando curso
+        sql = "INSERT INTO cursos (nome, carga_horaria) VALUES (%s, %s)"
+        valores = (curso.nome, curso.carga_horaria) #usando as funcoes do mysql "INSERT INTO"  com os valores
+        self.cursor.execute(sql, valores) #executando as dua linhas anteriores
+        self.conexao.commit() #adicionando e atualizando no banco
+        print('Curso cadastrado com sucesso.')
+
+    def listar_alunos(self): #metodo de listar alunos
+        sql = "SELECT * FROM alunos" #selecionando na tabela alunos
+        self.cursor.execute(sql) #executando a linha anterior
+        alunos = self.cursor.fetchall() #consultando no banco de dados os alunos
+        for aluno in alunos:#para aluno na tabela alunos
+            print(f"Id: {aluno[0]}")
+            print(f"Nome: {aluno[1]}")
+            print(f"Data De Nascimento: {aluno[2]}")
+            print() #id recebera 0 pois se inicia a contagem no 0
+
+    def listar_professores(self): #metodo de listar professores
+        sql = "SELECT * FROM professores" #selecionando da tabela professores
+        self.cursor.execute(sql) #executando a linha anterior
+        professores = self.cursor.fetchall() #consultando no banco de dados dos professores
+        for professor in professores:  #para professor na tabela professores
+            print(f"Id: {professor[0]}")
+            print(f"Nome: {professor[1]}")
+            print(f"Especialidade: {professor[2]}")
+            print() #id recebera 0 pois se inicia a contagem no 0
+
+    def listar_cursos(self): #metodo de listar cursos
+        sql = "SELECT * FROM cursos"#selecionando da tabela cursos
+        self.cursor.execute(sql) #executando a linha anterior
+        cursos = self.cursor.fetchall() #consultando no banco de dados do curso
+        for curso in cursos: #para curso na tabela cursos
+            print(f"Id: {curso[0]}")
+            print(f"Nome: {curso[1]}")
+            print(f"Carga horaria: {curso[2]}")
+            print() #id recebera 0 pois se inicia a contagem no 0
+
+    def fechar_conexao(self): #fechando conexao
+        self.conexao.close()
+        print('Conexao fechada.')
+
+def main(): 
+    sistema = SistemaEscolar() #acessando o sistema do banco de dados
+
+    while True:# se for verdadeiro
+        opcao = menu() #opcoes do menu
+        if opcao == "1": #opcao 1
+            nome = input("Nome: ") #puxando o nome
+            data_nascimento = input("Data nascimento (formato AAAA/MM/DD): ") #puxando a data de nascimento com a forma de ano/mes e dia
+            aluno = Aluno(nome, data_nascimento) #puxando o aluno ta tabela Aluno com o nome e a data_nascimento
+            sistema.adicionar_aluno(aluno)#adicionando  o aluno no sistema
+        elif opcao == "2": #elif= outra condicao que no caso essa é a 2
+            sistema.listar_alunos() #puxando do sistema a lista dos alunos
+        elif opcao == "3": #opcao 3
+            nome = input("Nome: ")#puxando nome
+            especialidade = input("Especialidade: ") #puxando especialidade 
+            sistema.adicionar_professor(nome, especialidade) #adicionando o professor no sistema
+        elif opcao == "4": #opcao 4
+            sistema.listar_professores() #puxando do sistema os professors
+        elif opcao == "5": #opcao 5
+            nome = input("Nome do Curso: ") #puxando o nome
+            carga_horaria = int(input("Carga horaria (em horas): ")) #puxando a carga horaria
+            curso = Curso(nome, carga_horaria) #puxando da tabela curso nomee carga horaria
+            sistema.adicionar_cursos(curso) #adicionando no sistema o curso
+        elif opcao == "6": #opcao 6
+            sistema.listar_cursos() #puxando do sistema a lista de cursos
+        elif opcao == "7": #opcao 7
+            sistema.fechar_conexao() #fechando conexao
+            break
+
+def menu(): #menu de opcoes
+    print("1. Inserir Aluno") 
+    print("2. Listar Alunos")
+    print("3. Inserir Professores")
+    print("4. Listar Professores")
+    print("5. Inserir Cursos")
+    print("6. Listar Cursos")
+    print("7. Sair")
+    return input("Escolha uma opção: ") #retorna a cada opcao escolhida ate escolher sair
+
+if __name__ == "__main__": #permitindo que o código dentro do bloco if seja executado somente quando o arquivo Python é executado diretamente 
+    main() 
